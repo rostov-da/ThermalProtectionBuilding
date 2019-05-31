@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ThermalProtectionBuilding.UI.ViewModel
 {
-    public class LayerMaterial
+    public class LayerMaterialViewModel
     {
         #region ====== FIELDS =================================================
 
@@ -51,7 +51,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
 
         #region ====== CONSTRUCTORS ===========================================
 
-        public LayerMaterial()
+        public LayerMaterialViewModel()
         {
 
         }

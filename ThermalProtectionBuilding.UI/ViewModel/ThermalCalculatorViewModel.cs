@@ -66,7 +66,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// Слой стены, от внешней к внутренней поверхности стены здания.
         /// Внешняя - на улице, внутренняя - внутри помещения.
         /// </summary>
-        private readonly ObservableCollection<LayerMaterial> _layers;
+        private readonly ObservableCollection<LayerMaterialViewModel> _layers;
 
         /// <summary>
         /// Коэффициент для расчёта нормативного значения приведенного сопротивления теплопередаче.
@@ -117,7 +117,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
 
         public ThermalCalculatorViewModel()
         {
-            _layers = new ObservableCollection<LayerMaterial>();
+            _layers = new ObservableCollection<LayerMaterialViewModel>();
             
         }
 
@@ -206,7 +206,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// Слой стены, от внешней к внутренней поверхности стены здания.
         /// Внешняя - на улице, внутренняя - внутри помещения.
         /// </summary>
-        public ObservableCollection<LayerMaterial> Layers => _layers;
+        public ObservableCollection<LayerMaterialViewModel> Layers => _layers;
 
         /// <summary>
         /// Коэффициент для расчёта нормативного значения приведенного сопротивления теплопередаче.
@@ -320,11 +320,11 @@ namespace ThermalProtectionBuilding.UI.ViewModel
 
             // Для каждого слоя заданной стены необходимо рассчитать термическое сопротивление по формуле
 
-            List<LayerMaterial> layers_existing = _layers.Where(x => !double.IsNaN(x.Thickness)).ToList();
-            List<LayerMaterial> layers_nonexisting = _layers.Where(x => double.IsNaN(x.Thickness)).ToList();
+            List<LayerMaterialViewModel> layers_existing = _layers.Where(x => !double.IsNaN(x.Thickness)).ToList();
+            List<LayerMaterialViewModel> layers_nonexisting = _layers.Where(x => double.IsNaN(x.Thickness)).ToList();
             if (layers_nonexisting.Count != 1)
                 throw new Exception("Должн быть один слой, для которого не задано значение толщины thickness = NaN, для этого слоя будет рассчитана его толщина.");
-            LayerMaterial layer_nonexisting = layers_nonexisting[0];
+            LayerMaterialViewModel layer_nonexisting = layers_nonexisting[0];
 
             layers_existing.ForEach(x => x.Update());
             double resistanceHeatTransfer_sumExisting = layers_existing.Sum(x => x.ThermalResistance);
@@ -362,7 +362,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
             Coeff_alpha_inside = 8.7;
             Coeff_alpha_outside = 23.0;
 
-            var layer_1 = new LayerMaterial()
+            var layer_1 = new LayerMaterialViewModel()
             {
                 TypeMaterial = "Кирпич декоративный (бессер) на цементно-песчаном растворе",
                 Thickness = 90.0 / 1000.0,
@@ -371,7 +371,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
                 VaporPermeability = 0.1,
             };
 
-            var layer_2 = new LayerMaterial()
+            var layer_2 = new LayerMaterialViewModel()
             {
                 TypeMaterial = "Утеплитель (минераловатная плита)",
                 Thickness = double.NaN,
@@ -380,7 +380,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
                 VaporPermeability = 0.41,
             };
 
-            var layer_3 = new LayerMaterial()
+            var layer_3 = new LayerMaterialViewModel()
             {
                 TypeMaterial = "Cиликатный кирпич на цементно-песчаном растворе",
                 Thickness = 250.0 / 1000.0,
@@ -389,7 +389,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
                 VaporPermeability = 0.11,
             };
 
-            var layer_4 = new LayerMaterial()
+            var layer_4 = new LayerMaterialViewModel()
             {
                 TypeMaterial = "Штукатурка (сложный раствор)",
                 Thickness = 20.0 / 1000.0,
