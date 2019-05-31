@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ThermalProtectionBuilding.UI.ViewModel
 {
-    public class LayerMaterialViewModel
+    /// <summary>
+    /// Слой стены.
+    /// </summary>
+    public class LayerMaterialViewModel : NotifyObject
     {
         #region ====== FIELDS =================================================
 
@@ -67,7 +70,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public string TypeMaterial
         {
             get => _typeMaterial;
-            set => _typeMaterial = value;
+            set
+            {
+                SetValueNotifyProperty(ref _typeMaterial, value);
+            }
         }
 
         /// <summary>
@@ -77,7 +83,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Thickness
         {
             get => _thickness;
-            set => _thickness = value;
+            set
+            {
+                SetValueNotifyProperty(ref _thickness, value);
+            }
         }
 
         /// <summary>
@@ -87,8 +96,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Density
         {
             get => _density;
-            set => _density = value;
-
+            set
+            {
+                SetValueNotifyProperty(ref _density, value);
+            }
         }
 
         /// <summary>
@@ -98,7 +109,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double ThermalConductivity
         {
             get => _thermalConductivity;
-            set => _thermalConductivity = value;
+            set
+            {
+                SetValueNotifyProperty(ref _thermalConductivity, value);
+            }
         }
 
         /// <summary>
@@ -108,7 +122,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double VaporPermeability
         {
             get => _vaporPermeability;
-            set => _vaporPermeability = value;
+            set
+            {
+                SetValueNotifyProperty(ref _vaporPermeability, value);
+            }
         }
 
         /// <summary>
@@ -119,7 +136,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double ThermalResistance
         {
             get => _thermalResistance;
-            private set => _thermalResistance = value;
+            private set
+            {
+                SetValueNotifyProperty(ref _thermalResistance, value);
+            }
         }
 
         #endregion

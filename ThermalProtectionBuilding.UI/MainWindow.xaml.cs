@@ -41,7 +41,7 @@ namespace ThermalProtectionBuilding.UI
 
         #region ====== PROPERTIES public ======================================
 
-
+        public ThermalCalculatorViewModel ThermalCalculator => _thermalCalculatorViewModel;
 
         #endregion
 

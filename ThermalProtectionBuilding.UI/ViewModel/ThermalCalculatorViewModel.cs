@@ -8,11 +8,17 @@ using System.Threading.Tasks;
 namespace ThermalProtectionBuilding.UI.ViewModel
 {
     /// <summary>
-    /// Теплотехнический расчет трехслойной стены.
-    /// </summary>
-    public class ThermalCalculatorViewModel
+    /// Теплотехнический расчет стены из нескольких слоёв.
+    /// </summary>1
+    public class ThermalCalculatorViewModel : NotifyObject
     {
         #region ====== FIELDS =================================================
+
+        /// <summary>
+        /// Слой стены, от внешней к внутренней поверхности стены здания.
+        /// Внешняя - на улице, внутренняя - внутри помещения.
+        /// </summary>
+        private readonly ObservableCollection<LayerMaterialViewModel> _layers;
 
         /// <summary>
         /// Имя города, например "Нижний Новгород".
@@ -60,13 +66,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// (СНиП 23-01-99 табл. 1 столбец 12).
         /// [градусы цельсия]
         /// </summary>
-        private double _averageTemperatureHeatingPeriod_OutsideBuilding;
-
-        /// <summary>
-        /// Слой стены, от внешней к внутренней поверхности стены здания.
-        /// Внешняя - на улице, внутренняя - внутри помещения.
-        /// </summary>
-        private readonly ObservableCollection<LayerMaterialViewModel> _layers;
+        private double _temperatureAverage_HeatingPeriod_OutsideBuilding;
 
         /// <summary>
         /// Коэффициент для расчёта нормативного значения приведенного сопротивления теплопередаче.
@@ -127,12 +127,21 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         #region ====== PROPERTIES public ======================================
 
         /// <summary>
+        /// Слой стены, от внешней к внутренней поверхности стены здания.
+        /// Внешняя - на улице, внутренняя - внутри помещения.
+        /// </summary>
+        public ObservableCollection<LayerMaterialViewModel> Layers => _layers;
+
+        /// <summary>
         /// Имя города, например "Нижний Новгород".
         /// </summary>
         public string NameCity
         {
             get => _nameCity;
-            set => _nameCity = value;
+            set
+            {
+                SetValueNotifyProperty(ref _nameCity, value);
+            }
         }
 
         /// <summary>
@@ -141,7 +150,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public string TypeBuilding
         {
             get => _typeBuilding;
-            set => _typeBuilding = value;
+            set
+            {
+                SetValueNotifyProperty(ref _typeBuilding, value);
+            }
         }
 
         /// <summary>
@@ -154,7 +166,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double HumidityAir_InsideBuilding
         {
             get => _humidityAir_InsideBuilding;
-            set => _humidityAir_InsideBuilding = value;
+            set
+            {
+                SetValueNotifyProperty(ref _humidityAir_InsideBuilding, value);
+            }
         }
 
         /// <summary>
@@ -165,7 +180,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double TemperatureAirOptimum_InsideBuilding
         {
             get => _temperatureAirOptimum_InsideBuilding;
-            set => _temperatureAirOptimum_InsideBuilding = value;
+            set
+            {
+                SetValueNotifyProperty(ref _temperatureAirOptimum_InsideBuilding, value);
+            }
         }
 
         /// <summary>
@@ -177,7 +195,24 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double TemperatureAir_OutsideBuilding
         {
             get => _temperatureAir_OutsideBuilding;
-            set => _temperatureAir_OutsideBuilding = value;
+            set
+            {
+                SetValueNotifyProperty(ref _temperatureAir_OutsideBuilding, value);
+            }
+        }
+
+        /// <summary>
+        /// Средняя температура наружного воздуха за отопительный период.
+        /// (СНиП 23-01-99 табл. 1 столбец 12).
+        /// [градусы цельсия]
+        /// </summary>
+        public double TemperatureAverage_HeatingPeriod_OutsideBuilding
+        {
+            get => _temperatureAverage_HeatingPeriod_OutsideBuilding;
+            set
+            {
+                SetValueNotifyProperty(ref _temperatureAverage_HeatingPeriod_OutsideBuilding, value);
+            }
         }
 
         /// <summary>
@@ -188,25 +223,11 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double DurationHeatingPeriod
         {
             get => _durationHeatingPeriod;
-            set => _durationHeatingPeriod = value;
+            set
+            {
+                SetValueNotifyProperty(ref _durationHeatingPeriod, value);
+            }
         }
-
-        /// <summary>
-        /// Средняя температура наружного воздуха за отопительный период.
-        /// (СНиП 23-01-99 табл. 1 столбец 12).
-        /// [градусы цельсия]
-        /// </summary>
-        public double AverageTemperatureHeatingPeriod_OutsideBuilding
-        {
-            get => _averageTemperatureHeatingPeriod_OutsideBuilding;
-            set => _averageTemperatureHeatingPeriod_OutsideBuilding = value;
-        }
-
-        /// <summary>
-        /// Слой стены, от внешней к внутренней поверхности стены здания.
-        /// Внешняя - на улице, внутренняя - внутри помещения.
-        /// </summary>
-        public ObservableCollection<LayerMaterialViewModel> Layers => _layers;
 
         /// <summary>
         /// Коэффициент для расчёта нормативного значения приведенного сопротивления теплопередаче.
@@ -216,7 +237,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Coeff_A_heatTransfer
         {
             get => _coeff_A_heatTransfer;
-            set => _coeff_A_heatTransfer = value;
+            set
+            {
+                SetValueNotifyProperty(ref _coeff_A_heatTransfer, value);
+            }
         }
 
         /// <summary>
@@ -227,7 +251,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Coeff_B_heatTransfer
         {
             get => _coeff_B_heatTransfer;
-            set => _coeff_B_heatTransfer = value;
+            set
+            {
+                SetValueNotifyProperty(ref _coeff_B_heatTransfer, value);
+            }
         }
 
         /// <summary>
@@ -237,7 +264,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Coeff_n
         {
             get => _coeff_n;
-            set => _coeff_n = value;
+            set
+            {
+                SetValueNotifyProperty(ref _coeff_n, value);
+            }
         }
 
         /// <summary>
@@ -250,7 +280,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double DeltaTemperatureNormalized
         {
             get => _deltaTemperatureNormalized;
-            set => _deltaTemperatureNormalized = value;
+            set
+            {
+                SetValueNotifyProperty(ref _deltaTemperatureNormalized, value);
+            }
         }
 
         /// <summary>
@@ -261,7 +294,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Coeff_alpha_inside
         {
             get => _coeff_alpha_inside;
-            set => _coeff_alpha_inside = value;
+            set
+            {
+                SetValueNotifyProperty(ref _coeff_alpha_inside, value);
+            }
         }
 
         /// <summary>
@@ -271,7 +307,10 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public double Coeff_alpha_outside
         {
             get => _coeff_alpha_outside;
-            set => _coeff_alpha_outside = value;
+            set
+            {
+                SetValueNotifyProperty(ref _coeff_alpha_outside, value);
+            }
         }
 
         #endregion
@@ -296,7 +335,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
 
             double temp_inside = _temperatureAirOptimum_InsideBuilding;
             double temp_outside = _temperatureAir_OutsideBuilding;
-            double temp_average_outside = _averageTemperatureHeatingPeriod_OutsideBuilding;
+            double temp_average_outside = _temperatureAverage_HeatingPeriod_OutsideBuilding;
 
             // Определение градусо-суток отопительного периода [°C * сут]
             // по п.5.3 СНиП 23-02-2003
@@ -354,7 +393,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
             TemperatureAirOptimum_InsideBuilding = 20;
             TemperatureAir_OutsideBuilding = -31;
             DurationHeatingPeriod = 215;
-            AverageTemperatureHeatingPeriod_OutsideBuilding = -4.1;
+            TemperatureAverage_HeatingPeriod_OutsideBuilding = -4.1;
             Coeff_A_heatTransfer = 0.00035;
             Coeff_B_heatTransfer = 1.4;
             Coeff_n = 1.0;
