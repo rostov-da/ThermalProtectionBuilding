@@ -8,7 +8,9 @@
     x:Name="ThisControl"
     Title="Thermal Protection of Building"
     Width="1000"
-    Height="600"
+    Height="1600"
+    d:DesignHeight="2000"
+    d:DesignWidth="1500"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     TextElement.FontSize="13"
@@ -23,182 +25,6 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Orientation="Vertical">
-                <TextBlock
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="Слои стены" />
-                <TextBlock
-                    Margin="0"
-                    HorizontalAlignment="Center"
-                    FontSize="14"
-                    FontWeight="Normal"
-                    Text="(от внешней к внутренней)" />
-                <DataGrid
-                    MaxHeight="300"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    materialDesign:DataGridAssist.CellPadding="1"
-                    materialDesign:DataGridAssist.ColumnHeaderPadding="3"
-                    AutoGenerateColumns="False"
-                    CanUserAddRows="True"
-                    CanUserSortColumns="True"
-                    ItemsSource="{Binding ElementName=ThisControl, Path=ThermalCalculator.Layers}"
-                    RowDetailsVisibilityMode="Collapsed"
-                    VerticalScrollBarVisibility="Auto">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="300"
-                            Binding="{Binding TypeMaterial, Mode=TwoWay}"
-                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                            Header="Материал" />
-                        <DataGridTextColumn
-                            Width="100"
-                            Binding="{Binding Thickness, Mode=TwoWay}"
-                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                            Header="Толщина&#10; м" />
-                        <DataGridTextColumn
-                            Width="120"
-                            Binding="{Binding ThermalConductivity, Mode=TwoWay}"
-                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                            Header="Теплопроводность&#10; Вт/(м • °C)" />
-                    </DataGrid.Columns>
-                </DataGrid>
-                <StackPanel Height="10" />
-                <TextBlock
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="Параметры" />
-                <Grid>
-                    <Grid.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="VerticalAlignment" Value="Bottom" />
-                            <Setter Property="Margin" Value="5,20,5,0" />
-                        </Style>
-                    </Grid.Resources>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="100" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBox
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.NameCity}" />
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Text="Имя города" />
-                    <TextBox
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TypeBuilding}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Text="Тип здания" />
-                    <TextBox
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TemperatureAirOptimum_InsideBuilding}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Text="Оптимальная температура воздуха внутри здания в холодный период &#10; ГОСТ 30494-96 табл.1 &#10; градусы цельсия" />
-                    <TextBox
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TemperatureAir_OutsideBuilding}" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Text="Расчетная температура наружного воздуха, &#10; определяемая по температуре наиболее холодной пятидневки обеспеченностью &#10; СНиП 23-01-99 табл. 1 столбец 5 &#10; градусы цельсия" />
-                    <TextBox
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TemperatureAverage_HeatingPeriod_OutsideBuilding}" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Text="Средняя температура наружного воздуха за отопительный период &#10; СНиП 23-01-99 табл. 1 столбец 12 &#10; градусы цельсия" />
-                    <TextBox
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.DurationHeatingPeriod}" />
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="1"
-                        Text="Продолжительность отопительного периода &#10; со средней суточной температурой наружного воздуха 8°С &#10; СНиП 23-01-99 табл. 1 столбец 11 &#10; сутки" />
-                    <TextBox
-                        Grid.Row="6"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_A_heatTransfer}" />
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="1"
-                        Text="Коэффициент 'a' для расчёта нормативного значения приведенного сопротивления теплопередаче &#10; СНиП 23-02-2003 таблице 4 &#10; или если для стен жилого здания СП 50.13330.2012 таблице 3 столбец 3" />
-                    <TextBox
-                        Grid.Row="7"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_B_heatTransfer}" />
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="1"
-                        Text="Коэффициент 'b' для расчёта нормативного значения приведенного сопротивления теплопередаче &#10; СНиП 23-02-2003 таблице 4 или если для стен жилого здания СП 50.13330.2012 таблице 3 столбец 3" />
-                    <TextBox
-                        Grid.Row="8"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_n}" />
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="1"
-                        Text="Коэффициент для определения нормативного(максимально допустимого) сопротивления теплопередаче &#10; СНиП 23-02-2003(СП 50.13330.2012) таблица 6 для наружной стены" />
-                    <TextBox
-                        Grid.Row="9"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.DeltaTemperatureNormalized}" />
-                    <TextBlock
-                        Grid.Row="9"
-                        Grid.Column="1"
-                        Text="Нормируемый температурный перепад между температурой внутреннего воздуха &#10; и температурой внутренней поверхности ограждающей конструкции &#10; [СНиП 23-02-2003(СП 50.13330.2012)] таблица 5. &#10; °С" />
-                    <TextBox
-                        Grid.Row="10"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_alpha_inside}" />
-                    <TextBlock
-                        Grid.Row="10"
-                        Grid.Column="1"
-                        Text="Коэффициент теплопередачи внутренней поверхности ограждающей конструкции, &#10; СНиП 23-02-2003(СП 50.13330.2012) таблица 5 для наружных стен  &#10; Вт/(м2×°С)" />
-                    <TextBox
-                        Grid.Row="11"
-                        Grid.Column="0"
-                        Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_alpha_outside}" />
-                    <TextBlock
-                        Grid.Row="11"
-                        Grid.Column="1"
-                        Text="Сопротивление теплообмену на наружной поверхности,  &#10; пособие.Е.Г.Малявина 'Теплопотери здания. Справочное пособие' таблица 14 для наружных стен" />
-                </Grid>
-                <StackPanel Height="20" />
                 <Button
                     Margin="10"
                     HorizontalAlignment="Center"
@@ -209,21 +35,207 @@
                 <Button
                     Margin="10"
                     HorizontalAlignment="Center"
-                    Click="Button_Click_CalculateThickness"
-                    Content="Рассчитать толщину"
+                    Click="Button_Click_Calculate_IsMeetsStandards"
+                    Content="Проверить на соответсвие стандартам"
                     FontSize="20"
                     FontWeight="Bold" />
                 <TextBlock
-                    Margin="10"
-                    HorizontalAlignment="Center"
-                    FontSize="20"
-                    FontWeight="Bold">
-                    <Run Text="Толщина = " />
-                    <Run x:Name="__runTextBlock_thicknessCalculation" Text="--" />
-                    <Run Text="мм" />
-                </TextBlock>
+                    x:Name="__textBlock_result_isMeetsStandards"
+                    FontSize="16"
+                    FontWeight="Bold" />
+                <Separator />
+                <Expander
+                    ExpandDirection="Down"
+                    Header="Нормативные документы"
+                    IsExpanded="False">
+                    <TextBlock Text="Расчет производится в соответствии с требованиями следующих нормативных документов:&#10;  СП 50.13330.2012 Тепловая защита зданий.&#10;  СП 131.13330.2012 Строительная климатология.&#10;  СП 23-101-2004 Проектирование тепловой защиты зданий" />
+                </Expander>
+                <Separator />
+                <Expander
+                    ExpandDirection="Down"
+                    Header="Слой защитной конструкции"
+                    IsExpanded="False">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock
+                            Margin="0"
+                            HorizontalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="Normal"
+                            Text="(от внешней к внутренней)" />
+                        <DataGrid
+                            MaxHeight="300"
+                            Margin="5"
+                            HorizontalAlignment="Center"
+                            materialDesign:DataGridAssist.CellPadding="1"
+                            materialDesign:DataGridAssist.ColumnHeaderPadding="3"
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="True"
+                            CanUserSortColumns="True"
+                            ItemsSource="{Binding ElementName=ThisControl, Path=ThermalCalculator.Layers}"
+                            RowDetailsVisibilityMode="Collapsed"
+                            VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="300"
+                                    Binding="{Binding TypeMaterial, Mode=TwoWay}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                    Header="Материал" />
+                                <DataGridTextColumn
+                                    Width="100"
+                                    Binding="{Binding Thickness, Mode=TwoWay}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                    Header="Толщина&#10; м" />
+                                <DataGridTextColumn
+                                    Width="120"
+                                    Binding="{Binding ThermalConductivity, Mode=TwoWay}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                    Header="Теплопроводность&#10; Вт/(м • °C)" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Expander>
+                <Separator />
+                <Expander
+                    ExpandDirection="Down"
+                    Header="Параметры"
+                    IsExpanded="False">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                                    <Setter Property="Margin" Value="5,20,5,0" />
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="100" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.NameCity}" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="Имя города" />
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TypeBuilding}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="Тип здания" />
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TypeWall}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Text="Тип стены" />
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TemperatureAir_inside}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Text="Температура воздуха внутри здания в холодный период &#xA; градусы цельсия" />
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TemperatureAir_outside}" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Text="Расчетная температура наружного воздуха, &#xA; определяемая по температуре наиболее холодной пятидневки обеспеченностью &#xA; градусы цельсия" />
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.TemperatureAverage_heatingPeriod_outside}" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Text="Средняя температура наружного воздуха за отопительный период &#xA; градусы цельсия" />
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.DurationHeatingPeriod}" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Text="Продолжительность отопительного периода &#xA; со средней суточной температурой наружного воздуха 8°С &#xA; сутки" />
+                            <TextBox
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.CoefficientHomogeneity}" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                Text="Коэффициент теплотехнической однородности 'r' &#xA; безразмерная величина" />
+                            <TextBox
+                                Grid.Row="8"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_A_heatTransfer}" />
+                            <TextBlock
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                Text="Коэффициент 'a' для расчёта нормативного значения приведенного сопротивления теплопередаче" />
+                            <TextBox
+                                Grid.Row="9"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_B_heatTransfer}" />
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="1"
+                                Text="Коэффициент 'b' для расчёта нормативного значения приведенного сопротивления теплопередаче" />
+                            <TextBox
+                                Grid.Row="10"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.DeltaTemperatureNormalized}" />
+                            <TextBlock Grid.Row="10" Grid.Column="1"><Run Text="Нормируемый температурный перепад между температурой внутреннего воздуха &#xA; и температурой внутренней поверхности ограждающей конструкции&#xA; " /><Run Text="градусы цельсия" /></TextBlock>
+                            <TextBox
+                                Grid.Row="11"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_alpha_inside}" />
+                            <TextBlock
+                                Grid.Row="11"
+                                Grid.Column="1"
+                                Text="Коэффициент теплоотдачи внутренней поверхности ограждающей конструкции &#10; СП 50.13330.2012 таблица 4 стр 6 &#10; Вт/(м2×°С)" />
+                            <TextBox
+                                Grid.Row="12"
+                                Grid.Column="0"
+                                Text="{Binding ElementName=ThisControl, Path=ThermalCalculator.Coeff_alpha_outside}" />
+                            <TextBlock
+                                Grid.Row="12"
+                                Grid.Column="1"
+                                Text="Коэффициент теплоотдачи наружной поверхности огрождающей конструкии &#10; СП 50.13330.2012 таблица 6 стр 8 &#10; [Вт/(м2×°С)]" />
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+                <Separator />
             </StackPanel>
         </ScrollViewer>
-
     </Grid>
 </Window>

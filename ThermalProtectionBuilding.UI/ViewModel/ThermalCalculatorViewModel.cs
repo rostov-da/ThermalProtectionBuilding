@@ -31,20 +31,25 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         private string _typeBuilding;
 
         /// <summary>
+        /// Вид ограждающей конструкции.
+        /// </summary>
+        private string _typeWall;
+
+        /// <summary>
         /// Относительная влажность воздуха внутри здания.
         /// Расчетная относительная влажность внутреннего воздуха из условия не выпадения конденсата 
         /// на внутренних поверхностях наружных ограждений.
         /// (СНиП 23-02-2003 п.4.3. табл.1 для нормального влажностного режима)
         /// [проценты]
         /// </summary>
-        private double _humidityAir_InsideBuilding;
+        private double _humidityAir_inside;
 
         /// <summary>
         /// Оптимальная температура воздуха внутри здания в холодный период.
         /// (ГОСТ 30494-96 табл.1)
         /// [градусы цельсия]
         /// </summary>
-        private double _temperatureAirOptimum_InsideBuilding;
+        private double _temperatureAir_inside;
 
         /// <summary>
         /// Расчетная температура наружного воздуха, 
@@ -52,7 +57,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// (СНиП 23-01-99 табл. 1 столбец 5);
         /// [градусы цельсия]
         /// </summary>
-        private double _temperatureAir_OutsideBuilding;
+        private double _temperatureAir_outside;
 
         /// <summary>
         /// Продолжительность отопительного периода со средней суточной температурой наружного воздуха 8°С.
@@ -66,7 +71,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// (СНиП 23-01-99 табл. 1 столбец 12).
         /// [градусы цельсия]
         /// </summary>
-        private double _temperatureAverage_HeatingPeriod_OutsideBuilding;
+        private double _temperatureAverage_heatingPeriod_outside;
 
         /// <summary>
         /// Коэффициент для расчёта нормативного значения приведенного сопротивления теплопередаче.
@@ -83,32 +88,51 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         private double _coeff_B_heatTransfer;
 
         /// <summary>
-        /// Коэффициент для определения нормативного(максимально допустимого) сопротивления теплопередаче.
-        /// берётся из [СНиП 23-02-2003(СП 50.13330.2012)] таблица 6 для наружной стены;
-        /// </summary>
-        private double _coeff_n;
-
-        /// <summary>
-        /// Коэффициент для определения нормативного(максимально допустимого) сопротивления теплопередаче.
-        /// Нормируемый температурный перепад между температурой внутреннего воздуха и 
-        /// температурой внутренней поверхности ограждающей конструкции, 
-        /// принимается по [СНиП 23-02-2003(СП 50.13330.2012)] таблица 5.
+        /// Нормируемый температурный перепад между температурой внутреннего воздуха
+        /// и температурой внутренней поверхности ограждающей конструкции.
+        /// СП 50.13330.2012 таблица 5 стр 7
         /// [°С]
         /// </summary>
         private double _deltaTemperatureNormalized;
 
         /// <summary>
-        /// Коэффициент теплопередачи внутренней поверхности ограждающей конструкции,
-        /// принимается по [СНиП 23-02-2003(СП 50.13330.2012)] таблица 5 для наружных стен.
+        /// Коэффициент теплоотдачи внутренней поверхности ограждающей конструкции.
+        /// СП 50.13330.2012 таблица 4 стр 6
         /// [Вт/(м2×°С)]
         /// </summary>
         private double _coeff_alpha_inside;
 
         /// <summary>
-        /// Сопротивление теплообмену на наружной поверхности,
-        /// принимается по [Пособие.Е.Г.Малявина "Теплопотери здания. Справочное пособие"] таблица 14 для наружных стен.
+        /// Коэффициент теплоотдачи наружной поверхности огрождающей конструкии
+        /// СП 50.13330.2012 таблица 6 стр 8
+        /// [Вт/(м2×°С)]
         /// </summary>
         private double _coeff_alpha_outside;
+
+        /// <summary>
+        /// Коэффициент теплотехнической однородности ограждающей конструкции, 
+        /// учитывающий влияние стыков, откосов проемов, обрамляющих ребер, гибких связей и других теплопроводных включений
+        /// </summary>
+        private double _coefficientHomogeneity;
+
+        /// <summary>
+        /// Результат расчётов.
+        /// Базовое значение требуемого сопротивления теплопередачи 
+        /// м2·°С/Вт.
+        /// </summary>
+        private double _result_resistanceHeatTransfer_baseRequired;
+
+        /// <summary>
+        /// Приведенное сопротивление теплопередаче для стены.
+        /// м2·°С/Вт.
+        /// </summary>
+        private double _result_resistanceHeatTransfer_reduce_wall;
+
+        /// <summary>
+        /// True - ограждающая конструкция соответствует требованиям по теплопередаче.
+        /// </summary>
+        private bool _result_isMeetsStandarts;
+
 
         #endregion
 
@@ -118,7 +142,7 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         public ThermalCalculatorViewModel()
         {
             _layers = new ObservableCollection<LayerMaterialViewModel>();
-            
+
         }
 
         #endregion
@@ -157,18 +181,30 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         }
 
         /// <summary>
+        /// Тип ограждающей конструкии.
+        /// </summary>
+        public string TypeWall
+        {
+            get => _typeWall;
+            set
+            {
+                SetValueNotifyProperty(ref _typeWall, value);
+            }
+        }
+
+        /// <summary>
         /// Относительная влажность воздуха внутри здания.
         /// Расчетная относительная влажность внутреннего воздуха из условия не выпадения конденсата 
         /// на внутренних поверхностях наружных ограждений.
         /// (СНиП 23-02-2003 п.4.3. табл.1 для нормального влажностного режима)
         /// [проценты]
         /// </summary>
-        public double HumidityAir_InsideBuilding
+        public double HumidityAir_inside
         {
-            get => _humidityAir_InsideBuilding;
+            get => _humidityAir_inside;
             set
             {
-                SetValueNotifyProperty(ref _humidityAir_InsideBuilding, value);
+                SetValueNotifyProperty(ref _humidityAir_inside, value);
             }
         }
 
@@ -177,12 +213,12 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// (ГОСТ 30494-96 табл.1)
         /// [градусы цельсия]
         /// </summary>
-        public double TemperatureAirOptimum_InsideBuilding
+        public double TemperatureAir_inside
         {
-            get => _temperatureAirOptimum_InsideBuilding;
+            get => _temperatureAir_inside;
             set
             {
-                SetValueNotifyProperty(ref _temperatureAirOptimum_InsideBuilding, value);
+                SetValueNotifyProperty(ref _temperatureAir_inside, value);
             }
         }
 
@@ -192,12 +228,12 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// (СНиП 23-01-99 табл. 1 столбец 5);
         /// [градусы цельсия]
         /// </summary>
-        public double TemperatureAir_OutsideBuilding
+        public double TemperatureAir_outside
         {
-            get => _temperatureAir_OutsideBuilding;
+            get => _temperatureAir_outside;
             set
             {
-                SetValueNotifyProperty(ref _temperatureAir_OutsideBuilding, value);
+                SetValueNotifyProperty(ref _temperatureAir_outside, value);
             }
         }
 
@@ -206,12 +242,12 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         /// (СНиП 23-01-99 табл. 1 столбец 12).
         /// [градусы цельсия]
         /// </summary>
-        public double TemperatureAverage_HeatingPeriod_OutsideBuilding
+        public double TemperatureAverage_heatingPeriod_outside
         {
-            get => _temperatureAverage_HeatingPeriod_OutsideBuilding;
+            get => _temperatureAverage_heatingPeriod_outside;
             set
             {
-                SetValueNotifyProperty(ref _temperatureAverage_HeatingPeriod_OutsideBuilding, value);
+                SetValueNotifyProperty(ref _temperatureAverage_heatingPeriod_outside, value);
             }
         }
 
@@ -258,23 +294,9 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         }
 
         /// <summary>
-        /// Коэффициент для определения нормативного(максимально допустимого) сопротивления теплопередаче.
-        /// берётся из [СНиП 23-02-2003(СП 50.13330.2012)] таблица 6 для наружной стены;
-        /// </summary>
-        public double Coeff_n
-        {
-            get => _coeff_n;
-            set
-            {
-                SetValueNotifyProperty(ref _coeff_n, value);
-            }
-        }
-
-        /// <summary>
-        /// Коэффициент для определения нормативного(максимально допустимого) сопротивления теплопередаче.
-        /// Нормируемый температурный перепад между температурой внутреннего воздуха и 
-        /// температурой внутренней поверхности ограждающей конструкции, 
-        /// принимается по [СНиП 23-02-2003(СП 50.13330.2012)] таблица 5.
+        /// Нормируемый температурный перепад между температурой внутреннего воздуха
+        /// и температурой внутренней поверхности ограждающей конструкции.
+        /// СП 50.13330.2012 таблица 5 стр 7
         /// [°С]
         /// </summary>
         public double DeltaTemperatureNormalized
@@ -287,8 +309,8 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         }
 
         /// <summary>
-        /// Коэффициент теплопередачи внутренней поверхности ограждающей конструкции,
-        /// принимается по [СНиП 23-02-2003(СП 50.13330.2012)] таблица 5 для наружных стен.
+        /// Коэффициент теплоотдачи внутренней поверхности ограждающей конструкции.
+        /// СП 50.13330.2012 таблица 4 стр 6
         /// [Вт/(м2×°С)]
         /// </summary>
         public double Coeff_alpha_inside
@@ -301,8 +323,9 @@ namespace ThermalProtectionBuilding.UI.ViewModel
         }
 
         /// <summary>
-        /// Сопротивление теплообмену на наружной поверхности,
-        /// принимается по [Пособие.Е.Г.Малявина "Теплопотери здания. Справочное пособие"] таблица 14 для наружных стен.
+        /// Коэффициент теплоотдачи наружной поверхности огрождающей конструкии
+        /// СП 50.13330.2012 таблица 6 стр 8
+        /// [Вт/(м2×°С)]
         /// </summary>
         public double Coeff_alpha_outside
         {
@@ -313,128 +336,165 @@ namespace ThermalProtectionBuilding.UI.ViewModel
             }
         }
 
+        /// <summary>
+        /// Коэффициент теплотехнической однородности ограждающей конструкции, 
+        /// учитывающий влияние стыков, откосов проемов, обрамляющих ребер, гибких связей и других теплопроводных включений
+        /// </summary>
+        public double CoefficientHomogeneity
+        {
+            get => _coefficientHomogeneity;
+            set
+            {
+                SetValueNotifyProperty(ref _coefficientHomogeneity, value);
+            }
+        }
+
+        /// <summary>
+        /// Результат расчётов.
+        /// Базовое значение требуемого сопротивления теплопередачи 
+        /// м2·°С/Вт.
+        /// </summary>
+        public double Result_resistanceHeatTransfer_baseRequired
+        {
+            get => _result_resistanceHeatTransfer_baseRequired;
+            set
+            {
+                SetValueNotifyProperty(ref _result_resistanceHeatTransfer_baseRequired, value);
+            }
+        }
+
+        /// <summary>
+        ///  Результат расчётов.
+        /// Приведенное сопротивление теплопередаче для стены.
+        /// м2·°С/Вт.
+        /// </summary>
+        public double Result_resistanceHeatTransfer_reduce_wall
+        {
+            get => _result_resistanceHeatTransfer_reduce_wall;
+            set
+            {
+                SetValueNotifyProperty(ref _result_resistanceHeatTransfer_reduce_wall, value);
+            }
+        }
+
+        /// <summary>
+        ///  Результат расчётов.
+        /// True - ограждающая конструкция соответствует требованиям по теплопередаче.
+        /// </summary>
+        public bool Result_isMeetsStandards
+        {
+            get => _result_isMeetsStandarts;
+            set
+            {
+                SetValueNotifyProperty(ref _result_isMeetsStandarts, value);
+            }
+        }
+
         #endregion
 
 
         #region ====== METHODS public =========================================
 
-        /// <summary>
-        /// Вычисляет необходимую толщину утеплителя.
-        /// [м]
-        /// </summary>
-        /// <returns></returns>
-        public double CalculateThickness()
+        public void Calculate_IsMeetsStandards()
         {
-            // Формулы взяты http://svoydomtoday.ru/utepleniye-konstrukciy/210-teplotehnicheskiy-raschet-s-primerom.html
+            // Источник http://rascheta.net/
+            // комментарии будет для конкретного случая - demo data
 
-            // [1]: СНиП 23-02-2003(СП 50.13330.2012). "Тепловая защита зданий".Актуализированная редакция от 2012 года.
-            // [2]: СНиП 23-01-99 (СП 131.13330.2012). "Строительная климатология".Актуализированная редакция от 2012 года.
-            // [3]: СП 23-101-2004 "Проектирование тепловой защиты зданий".
-            // [4]: ГОСТ 30494-96(заменен на ГОСТ 30494-2011 с 2011 года). "Здания жилые и общественные. Параметры микроклимата в помещениях".
-            // [5]: Пособие.Е.Г.Малявина "Теплопотери здания. Справочное пособие".
+            // Согласно таблицы 1 СП 50.13330.2012 при температуре внутреннего воздуха здания tint = 20°C 
+            // и относительной влажности воздуха φint = 55 % влажностный режим помещения устанавливается, как нормальный.
 
-            double temp_inside = _temperatureAirOptimum_InsideBuilding;
-            double temp_outside = _temperatureAir_OutsideBuilding;
-            double temp_average_outside = _temperatureAverage_HeatingPeriod_OutsideBuilding;
+            // Определим базовое значение требуемого сопротивления теплопередаче Roтр 
+            // исходя из нормативных требований к приведенному сопротивлению теплопередаче п. 5.2 СП 50.13330.2012 согласно формуле:
+            // Roтр = a·ГСОП + b
+            // где а и b-коэффициенты, значения которых следует приниматься по данным таблицы 3 СП 50.13330.2012 для соответствующих групп зданий.
+            // Так для ограждающей конструкции вида - наружные стены и типа здания - жилые а=0.00035;b=1.4
 
-            // Определение градусо-суток отопительного периода [°C * сут]
-            // по п.5.3 СНиП 23-02-2003
+            // Определим градусо-сутки отопительного периода ГСОП, 0С·сут по формуле (5.2) СП 50.13330.2012
+            // ГСОП = (tв - tот)zот
+
+            double temp_inside = _temperatureAir_inside;
+            double temp_outside = _temperatureAir_outside;
+            double temp_average_outside = _temperatureAverage_heatingPeriod_outside;
             double degreeDayHeatingPeriod = (temp_inside - temp_average_outside) * _durationHeatingPeriod;
 
-            // Нормативное значение приведенного сопротивления теплопередаче
-            // СНИП 23-02-2003 (табл.4)
-            double resistanceHeatTransfer_energySaving = degreeDayHeatingPeriod * _coeff_A_heatTransfer + _coeff_B_heatTransfer;
+            //  По формуле в таблице 3 СП 50.13330.2012 определяем базовое значение требуемого сопротивления теплопередачи Roтр (м2·°С/Вт).
+            double resistanceHeatTransfer_baseRequired = degreeDayHeatingPeriod * _coeff_A_heatTransfer + _coeff_B_heatTransfer;
 
+            // Поскольку населенный пункт Санкт-Петербург относится к зоне влажности - влажной, 
+            // при этом влажностный режим помещения - нормальный, то в соответствии 
+            // с таблицей 2 СП50.13330.2012 теплотехнические характеристики материалов ограждающих конструкций 
+            // будут приняты, как для условий эксплуатации Б.
 
-            // Определение нормативного (максимально допустимого) сопротивления теплопередаче 
-            // по условию санитарии (формула 3 СНиП 23-02-2003)
-            double n = _coeff_n;
-            double deltaTemp = _deltaTemperatureNormalized;
-            double alpha = _coeff_alpha_inside;
-            double resistanceHeatTransfer_sanitation = n * (temp_inside - temp_outside) / (deltaTemp * alpha);
-
-            // Требуемое сопротивление теплопередачи выбираем из условия энергосбережения
-            // почему?
-            double resistanceHeatTransfer_required = resistanceHeatTransfer_energySaving;
-
-            // Для каждого слоя заданной стены необходимо рассчитать термическое сопротивление по формуле
-
-            List<LayerMaterialViewModel> layers_existing = _layers.Where(x => !double.IsNaN(x.Thickness)).ToList();
-            List<LayerMaterialViewModel> layers_nonexisting = _layers.Where(x => double.IsNaN(x.Thickness)).ToList();
-            if (layers_nonexisting.Count != 1)
-                throw new Exception("Должн быть один слой, для которого не задано значение толщины thickness = NaN, для этого слоя будет рассчитана его толщина.");
-            LayerMaterialViewModel layer_nonexisting = layers_nonexisting[0];
-
-            layers_existing.ForEach(x => x.Update());
-            double resistanceHeatTransfer_sumExisting = layers_existing.Sum(x => x.ThermalResistance);
+            // Определим условное сопротивление теплопередаче R0усл, (м2°С / Вт) определим по формуле E.6 СП 50.13330.2012:
+            var layers = _layers.ToList();
+            layers.ForEach(x => x.Update());
+            double resistanceHeatTransfer_sumLayers = layers.Sum(x => x.ThermalResistance);
 
             // сопротивление теплообмену на внутренней поверхности;
             double resistanceHeatTransfer_inside = 1 / _coeff_alpha_inside;
             double resistanceHeatTransfer_outside = 1 / _coeff_alpha_outside;
 
+            double resistanceHeatTransfer_wall = resistanceHeatTransfer_inside + resistanceHeatTransfer_outside + resistanceHeatTransfer_sumLayers;
 
-            double R_req = resistanceHeatTransfer_required;
-            double R_in = resistanceHeatTransfer_inside;
-            double R_out = resistanceHeatTransfer_outside;
-            double R_sum = resistanceHeatTransfer_sumExisting;
-            double resistanceHeatTransfer_minimum = R_req - (R_in + R_out + R_sum);
+            // Приведенное сопротивление теплопередаче R0пр, (м2°С/Вт) определим по формуле 11 СП 23-101-2004:
+            double resistanceHeatTransfer_reduced_wall = resistanceHeatTransfer_wall * _coefficientHomogeneity;
 
-            // толщина утеплителя равна (формула 5,7 [Пособие.Е.Г.Малявина "Теплопотери здания. Справочное пособие"])
-            double thickness = layer_nonexisting.ThermalConductivity * resistanceHeatTransfer_minimum;
-            return thickness;
+            bool isMeetsStandards = resistanceHeatTransfer_reduced_wall > resistanceHeatTransfer_baseRequired;
+
+            Result_isMeetsStandards = isMeetsStandards;
+            Result_resistanceHeatTransfer_baseRequired = resistanceHeatTransfer_baseRequired;
+            Result_resistanceHeatTransfer_reduce_wall = resistanceHeatTransfer_reduced_wall;
         }
 
         public void SetDemoData()
         {
+            Result_resistanceHeatTransfer_baseRequired = 0;
+            Result_resistanceHeatTransfer_reduce_wall = 0;
+            Result_isMeetsStandards = false;
+
             Layers.Clear();
-            NameCity = "Нижний Новгород";
-            TypeBuilding = "жилое";
-            HumidityAir_InsideBuilding = 55;
-            TemperatureAirOptimum_InsideBuilding = 20;
-            TemperatureAir_OutsideBuilding = -31;
-            DurationHeatingPeriod = 215;
-            TemperatureAverage_HeatingPeriod_OutsideBuilding = -4.1;
+
+            NameCity = "Санкт-Петербург";
+            TypeBuilding = "Жилое";
+            TypeWall = "Наружные стены";
+            HumidityAir_inside = 55;
+            TemperatureAir_inside = 20;
+            TemperatureAir_outside = -24;
+            TemperatureAverage_heatingPeriod_outside = -1.3;
+            DurationHeatingPeriod = 213;
             Coeff_A_heatTransfer = 0.00035;
             Coeff_B_heatTransfer = 1.4;
-            Coeff_n = 1.0;
             DeltaTemperatureNormalized = 4.0;
             Coeff_alpha_inside = 8.7;
             Coeff_alpha_outside = 23.0;
+            CoefficientHomogeneity = 0.92;
 
             var layer_1 = new LayerMaterialViewModel()
             {
-                TypeMaterial = "Кирпич декоративный (бессер) на цементно-песчаном растворе",
-                Thickness = 90.0 / 1000.0,
-                Density = 2300.0,
-                ThermalConductivity = 0.96,
-                VaporPermeability = 0.1,
+                TypeMaterial = "Кладка из керамического пустотного кирпича ГОСТ 530(p=1300кг/м.куб)",
+                Thickness = 0.12,
+                ThermalConductivity = 0.58,
             };
 
             var layer_2 = new LayerMaterialViewModel()
             {
-                TypeMaterial = "Утеплитель (минераловатная плита)",
-                Thickness = double.NaN,
-                Density = 250.0,
-                ThermalConductivity = 0.085,
-                VaporPermeability = 0.41,
+                TypeMaterial = "Маты минераловатные ГОСТ 21880 (p=125 кг/м.куб)",
+                Thickness = 0.25,
+                ThermalConductivity = 0.07,
             };
 
             var layer_3 = new LayerMaterialViewModel()
             {
-                TypeMaterial = "Cиликатный кирпич на цементно-песчаном растворе",
-                Thickness = 250.0 / 1000.0,
-                Density = 1800.0,
-                ThermalConductivity = 0.87,
-                VaporPermeability = 0.11,
+                TypeMaterial = "Железобетон (ГОСТ 26633)",
+                Thickness = 0.2,
+                ThermalConductivity = 2.04,
             };
 
             var layer_4 = new LayerMaterialViewModel()
             {
-                TypeMaterial = "Штукатурка (сложный раствор)",
-                Thickness = 20.0 / 1000.0,
-                Density = 1700.0,
-                ThermalConductivity = 0.87,
-                VaporPermeability = 0.098,
+                TypeMaterial = "Фанера клееная (ГОСТ 8673)",
+                Thickness = 0.01,
+                ThermalConductivity = 0.18,
             };
 
             _layers.Add(layer_1);

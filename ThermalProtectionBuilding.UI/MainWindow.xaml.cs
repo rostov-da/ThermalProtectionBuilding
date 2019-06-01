@@ -53,14 +53,29 @@ namespace ThermalProtectionBuilding.UI
             _thermalCalculatorViewModel.SetDemoData();
         }
 
-        private void Button_Click_CalculateThickness(object sender, RoutedEventArgs e)
+        private void Button_Click_Calculate_IsMeetsStandards(object sender, RoutedEventArgs e)
         {
-            double thickness_meter = _thermalCalculatorViewModel.CalculateThickness();
-            double thickness_millimeter = thickness_meter * 1000.0;
-            string thickness_millimeter_asString = thickness_millimeter.ToString("0.0");
-            __runTextBlock_thicknessCalculation.Text = thickness_millimeter_asString;
+            _thermalCalculatorViewModel.Calculate_IsMeetsStandards();
+
+            double R_minRequired = _thermalCalculatorViewModel.Result_resistanceHeatTransfer_baseRequired;
+            double R_actual = _thermalCalculatorViewModel.Result_resistanceHeatTransfer_reduce_wall;
+            bool isMeetsStandards = _thermalCalculatorViewModel.Result_isMeetsStandards;
+            string text = "";
+            if (isMeetsStandards)
+                text = $"СООТВЕТСТВУЕТ стандартам, т. к. R_actual = {R_actual:0.0} > R_minRequired = {R_minRequired:0.0}";
+            else
+                text = $"НЕ СООТВЕТСТВУЕТ стандартам, т. к. R_actual = {R_actual:0.0} < R_minRequired = {R_minRequired:0.0}";
+
+            text += Environment.NewLine;
+            text += "R_actual - приведенное сопротивление теплопередачи, м2·°С/Вт.";
+            text += Environment.NewLine;
+            text += "R_actual - базовое значение требуемого сопротивления теплопередачи , м2·°С/Вт.";
+
+            __textBlock_result_isMeetsStandards.Text = text;
         }
 
         #endregion
+
+
     }
 }
